@@ -1,0 +1,18 @@
+{
+  "name": "invoice-generator",
+  "version": "1.0.0",
+  "description": "Application that creates an invoice and saves it to a database.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kyle Williams",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^9.0.1",
+    "express": "^4.17.1",
+    "express-validator": "^6.11.1"
+  }
+}
