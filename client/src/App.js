@@ -1,10 +1,16 @@
-import logo from './img/staxpaybyfattmerchant.png';
+import Header from './components/Header';
+import Form from './components/Form';
+
+import Container from 'react-bootstrap/Container';
+
+
 
 function App() {
   return (
-    <div>
-      <img src={logo} alt="Stax Pay by Fat Merchant" />
-    </div>
+      <Container fluid>
+        <Header />
+        <Form />
+      </Container>
   );
 }
 
