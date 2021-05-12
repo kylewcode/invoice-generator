@@ -1,18 +1,21 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect, Fragment } from 'react';
 
-import axios from 'axios'
+import axios from 'axios';
 
 import Header from './components/Header';
-import FormComponent from './components/FormComponent';
+import AddItems from './components/AddItems';
+import ItemList from './components/ItemList';
+import Memo from './components/Memo';
+import Totals from './components/Totals';
 
 import Container from 'react-bootstrap/Container';
 // import Row from 'react-bootstrap/Row';
 // import Col from 'react-bootstrap/Col';
 // import Button from 'react-bootstrap/Button';
-// import Form from 'react-bootstrap/Form'
+import Form from 'react-bootstrap/Form';
 
 function App() {
-  const [data, setData] = useState(null);
+  const [APIdata, setData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,8 +33,17 @@ function App() {
 
   return (
     <Container fluid>
-      <Header />
-      {/* <FormComponent APIdata={data}/> */}
+      <Form>
+        {APIdata ? (
+          <Fragment>
+            <Header />
+            <AddItems />
+            <ItemList />
+            <Memo />
+            <Totals />
+          </Fragment>
+        ) : null}
+      </Form>
     </Container>
   );
 }
