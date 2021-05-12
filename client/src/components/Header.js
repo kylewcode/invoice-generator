@@ -7,7 +7,6 @@ import Image from 'react-bootstrap/Image';
 function Header() {
   return (
     <div>
-      <div className='text-center'>Header Component</div>
       <Row>
         <Col>
           <Image src={logo} alt='Stax Pay by Fat Merchant' thumbnail />

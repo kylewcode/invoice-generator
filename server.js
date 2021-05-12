@@ -7,19 +7,24 @@ const port = 5000;
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const { body, validationResult } = require('express-validator');
+const cors = require('cors');
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200,
+};
 
 app.use(bodyParser.json());
 
-const { preventPriceCalculationErrors, validateLineItems } = require('./utils/helper');
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+const {
+  preventPriceCalculationErrors,
+  validateLineItems,
+} = require('./utils/helper');
 
 // @method        GET
 // @description   Fetches all line items details/price for the merchant's catalog.
 // @access        Public
-app.get('/api/item', async (req, res) => {
+app.get('/api/item', cors(corsOptions), async (req, res) => {
   try {
     const options = {
       headers: {
@@ -53,10 +58,14 @@ app.get('/api/item', async (req, res) => {
     });
 
     if (validateLineItems(prunedMerchantCatalog)) {
-      console.log('Catalog validated.')
+      console.log('Catalog validated.');
       return res.json(prunedMerchantCatalog);
     }
-    res.status(500).send('An external service has returned unusable data. Please contact administrator for assistance.');
+    res
+      .status(500)
+      .send(
+        'An external service has returned unusable data. Please contact administrator for assistance.'
+      );
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error');
@@ -68,14 +77,27 @@ app.get('/api/item', async (req, res) => {
 // @access        Public
 app.post(
   '/api/invoice',
-  body('customer_id').trim().blacklist(/\[<>&'"\/\]/).isLength({ min: 36, max: 36 }),
+  cors(corsOptions),
+  body('customer_id')
+    .trim()
+    .blacklist(/\[<>&'"\/\]/)
+    .isLength({ min: 36, max: 36 }),
   body('meta.subtotal').trim().isCurrency(),
   body('meta.tax').trim().isCurrency(),
   body('meta.lineItems').isArray(),
   body('meta.lineItems.*').isObject(),
-  body('meta.lineItems.*.id').trim().isString().blacklist(/\[<>&'"\/\]/),
-  body('meta.lineItems.*.item').trim().isString().blacklist(/\[<>&'"\/\]/),
-  body('meta.lineItems.*.details').trim().isString().blacklist(/\[<>&'"\/\]/),
+  body('meta.lineItems.*.id')
+    .trim()
+    .isString()
+    .blacklist(/\[<>&'"\/\]/),
+  body('meta.lineItems.*.item')
+    .trim()
+    .isString()
+    .blacklist(/\[<>&'"\/\]/),
+  body('meta.lineItems.*.details')
+    .trim()
+    .isString()
+    .blacklist(/\[<>&'"\/\]/),
   body('meta.lineItems.*.quantity').trim().isNumeric(),
   body('meta.lineItems.*.price').trim().isCurrency(),
   body('total').trim().isCurrency(),
