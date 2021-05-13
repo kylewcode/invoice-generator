@@ -43,7 +43,7 @@ function ItemList({ lineItems, dispatch }) {
                 <Form.Control
                   name='quantity'
                   type='number'
-                  defaultValue='1'
+                  defaultValue={item.quantity}
                   min='1'
                   data-details={item.details}
                   onChange={event => handleQuantityChange(event)}
