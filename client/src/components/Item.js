@@ -22,20 +22,14 @@ function Item({ item, dispatch }) {
     dispatch({ type: 'ADD_LINE_ITEM', payload: state });
   };
 
-  const updateTotalInState = quantity => {
-    const newTotal = parseFloat(
-      calculateTotalFromQuantityAndPrice(quantity, state.price)
-    );
-    setState({ ...state, total: [newTotal] });
-  };
-
-  const updateQuantityInState = value => {
-    setState({ ...state, quantity: [value] });
+  const updateQuantityAndTotalInState = quantity => {
+    const newTotal = calculateTotalFromQuantityAndPrice(quantity, state.price);
+    setState({ ...state, quantity: quantity, total: newTotal });
   };
 
   const handleQuantityChange = event => {
-    updateQuantityInState(event.target.value);
-    updateTotalInState(event.target.value);
+    const quantity = parseInt(event.target.value);
+    updateQuantityAndTotalInState(quantity);
   };
 
   return (

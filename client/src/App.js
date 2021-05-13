@@ -11,6 +11,8 @@ import Totals from './components/Totals';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
+import { updateLineItemQuantityByItemsDetailsQuantity, removeLineItemFromLineItemsByDetails } from './utils/helper';
+
 const initialFormState = {
   customer_id: '40a863f6-2108-4319-b8eb-a76affe2313c',
   meta: {
@@ -26,24 +28,55 @@ const initialFormState = {
 
 function formReducer(state, action) {
   const { type, payload } = action;
+  let lineItemsCopy;
+  let updatedMeta = {};
+
   switch (type) {
     case 'ADD_LINE_ITEM':
-      // console.log('Dispatched ADD_LINE_ITEM');
-      // console.log(payload);
-      const lineItemsCopy = state.meta.lineItems.slice();
+      lineItemsCopy = state.meta.lineItems.slice();
       lineItemsCopy.push(payload);
 
       // React doesn't update nested state
-      const updatedMeta = {
-          tax: state.meta.tax,
-          subtotal: state.meta.subtotal,
-          lineItems: lineItemsCopy,
-          memo: state.meta.memo,
+      updatedMeta = {
+        tax: state.meta.tax,
+        subtotal: state.meta.subtotal,
+        lineItems: lineItemsCopy,
+        memo: state.meta.memo,
       };
-      console.log(updatedMeta);
-
-      // I'm not updating state correctly here.
       return { ...state, meta: updatedMeta };
+
+    case 'QUANTITY_CHANGE':
+      lineItemsCopy = state.meta.lineItems.slice();
+      
+      const updatedQuantityLineItems = updateLineItemQuantityByItemsDetailsQuantity(
+        lineItemsCopy,
+        payload.details,
+        payload.quantity
+      );
+
+      updatedMeta = {
+        tax: state.meta.tax,
+        subtotal: state.meta.subtotal,
+        lineItems: updatedQuantityLineItems,
+        memo: state.meta.memo,
+      };
+
+      return { ...state, meta: updatedMeta };
+
+    case 'REMOVE_LINE_ITEM':
+      lineItemsCopy = state.meta.lineItems.slice();
+
+      const updatedRemovalLineItems = removeLineItemFromLineItemsByDetails(lineItemsCopy, payload);
+      console.log(updatedRemovalLineItems);
+
+      updatedMeta = {
+        tax: state.meta.tax,
+        subtotal: state.meta.subtotal,
+        lineItems: updatedRemovalLineItems,
+        memo: state.meta.memo,
+      };
+
+      return { ...state, meta: updatedMeta};
 
     default:
       return state;
@@ -75,7 +108,13 @@ function App() {
           <Fragment>
             <Header />
             <AddItems APIdata={APIdata} dispatch={dispatch} />
-            <ItemList />
+            {/* If line items are added, display the item list */}
+            {formState.meta.lineItems.length > 0 ? (
+              <ItemList
+                lineItems={formState.meta.lineItems}
+                dispatch={dispatch}
+              />
+            ) : null}
             <Memo />
             <Totals />
           </Fragment>
