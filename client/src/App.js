@@ -10,8 +10,13 @@ import Totals from './components/Totals';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-import { updateLineItemQuantityByItemsDetailsQuantity, removeLineItemFromLineItemsByDetails } from './utils/helper';
+import {
+  updateLineItemQuantityByItemsDetailsQuantity,
+  removeLineItemFromLineItemsByDetails,
+} from './utils/helper';
 
 const initialFormState = {
   customer_id: '40a863f6-2108-4319-b8eb-a76affe2313c',
@@ -47,12 +52,13 @@ function formReducer(state, action) {
 
     case 'QUANTITY_CHANGE':
       lineItemsCopy = state.meta.lineItems.slice();
-      
-      const updatedQuantityLineItems = updateLineItemQuantityByItemsDetailsQuantity(
-        lineItemsCopy,
-        payload.details,
-        payload.quantity
-      );
+
+      const updatedQuantityLineItems =
+        updateLineItemQuantityByItemsDetailsQuantity(
+          lineItemsCopy,
+          payload.details,
+          payload.quantity
+        );
 
       updatedMeta = {
         tax: state.meta.tax,
@@ -66,8 +72,10 @@ function formReducer(state, action) {
     case 'REMOVE_LINE_ITEM':
       lineItemsCopy = state.meta.lineItems.slice();
 
-      const updatedRemovalLineItems = removeLineItemFromLineItemsByDetails(lineItemsCopy, payload);
-      console.log(updatedRemovalLineItems);
+      const updatedRemovalLineItems = removeLineItemFromLineItemsByDetails(
+        lineItemsCopy,
+        payload
+      );
 
       updatedMeta = {
         tax: state.meta.tax,
@@ -76,7 +84,17 @@ function formReducer(state, action) {
         memo: state.meta.memo,
       };
 
-      return { ...state, meta: updatedMeta};
+      return { ...state, meta: updatedMeta };
+
+    case 'UPDATE_MEMO':
+      updatedMeta = {
+        tax: state.meta.tax,
+        subtotal: state.meta.subtotal,
+        lineItems: state.meta.lineItems,
+        memo: payload,
+      };
+
+      return { ...state, updatedMeta };
 
     default:
       return state;
@@ -108,15 +126,20 @@ function App() {
           <Fragment>
             <Header />
             <AddItems APIdata={APIdata} dispatch={dispatch} />
-            {/* If line items are added, display the item list */}
             {formState.meta.lineItems.length > 0 ? (
               <ItemList
                 lineItems={formState.meta.lineItems}
                 dispatch={dispatch}
               />
             ) : null}
-            <Memo />
-            <Totals />
+            <Row>
+              <Col>
+                <Memo dispatch={dispatch} />
+              </Col>
+              <Col>
+                <Totals />
+              </Col>
+            </Row>
           </Fragment>
         ) : null}
       </Form>

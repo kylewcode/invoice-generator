@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 function AddItems({ APIdata, dispatch }) {
   return (
     <div>
+      <h2>Choose your Product/Service</h2>
       <Row className='text-end justify-content-md-right fw-bold'>
         <Col>Details</Col>
         <Col xs={2}>Price</Col>
