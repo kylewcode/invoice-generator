@@ -94,7 +94,7 @@ function formReducer(state, action) {
         memo: payload,
       };
 
-      return { ...state, updatedMeta };
+      return { ...state, meta: updatedMeta };
 
     default:
       return state;
