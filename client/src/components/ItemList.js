@@ -1,11 +1,26 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import {
+  calculateTaxAndTotalsByItemTotalsAndTaxRate,
+  getLineItemsTotals,
+} from '../utils/helper';
+
 function ItemList({ lineItems, dispatch }) {
+  // Updates App state with the subtotal, tax, and grand total of all added line items.
+  useEffect(() => {
+    const itemsTotals = getLineItemsTotals(lineItems);
+    const taxAndTotals = calculateTaxAndTotalsByItemTotalsAndTaxRate(
+      itemsTotals,
+      2.5
+    );
+    dispatch({ type: 'UPDATE_TOTALS_AND_TAX', payload: taxAndTotals });
+  }, [lineItems, dispatch]);
+
   const handleQuantityChange = event => {
     const payloadData = {
       quantity: event.target.value,
@@ -15,7 +30,10 @@ function ItemList({ lineItems, dispatch }) {
   };
 
   const removeLineItemFromInvoice = event => {
-    dispatch({ type: 'REMOVE_LINE_ITEM', payload: event.target.dataset.details });
+    dispatch({
+      type: 'REMOVE_LINE_ITEM',
+      payload: event.target.dataset.details,
+    });
   };
 
   return (

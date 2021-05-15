@@ -1,11 +1,31 @@
-import React from 'react'
+import { Fragment } from 'react';
 
-function Totals() {
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+function Totals({
+  formState: {
+    total,
+    meta: { tax, subtotal },
+  },
+}) {
   return (
-    <div>
-      Totals
-    </div>
-  )
+    <Fragment>
+      <Row>
+        <Col>
+          SUB TOTAL: {subtotal}
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          TAX: {tax}
+        </Col>
+      </Row>
+      <Row>
+        <Col>GRAND TOTAL: {total}</Col>
+      </Row>
+    </Fragment>
+  );
 }
 
-export default Totals
+export default Totals;

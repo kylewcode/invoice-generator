@@ -10,7 +10,7 @@ function Memo({ dispatch }) {
 
   return (
     <Fragment>
-      <Form.Group controlID='memo-text-area'>
+      <Form.Group controlId='memo-text-area'>
         <Form.Label>Memo</Form.Label>
         <Form.Control
           as='textarea'

@@ -86,6 +86,18 @@ function formReducer(state, action) {
 
       return { ...state, meta: updatedMeta };
 
+    case 'UPDATE_TOTALS_AND_TAX':
+      const { grandTotal, tax, subTotal } = payload;
+
+      updatedMeta = {
+        tax,
+        subtotal: subTotal,
+        lineItems: state.meta.lineItems,
+        memo: state.meta.memo,
+      }
+
+      return {...state, total: grandTotal, meta: updatedMeta };
+
     case 'UPDATE_MEMO':
       updatedMeta = {
         tax: state.meta.tax,
@@ -136,8 +148,8 @@ function App() {
               <Col>
                 <Memo dispatch={dispatch} />
               </Col>
-              <Col>
-                <Totals />
+              <Col className='text-end'>
+                <Totals formState={formState} dispatch={dispatch} />
               </Col>
             </Row>
           </Fragment>
