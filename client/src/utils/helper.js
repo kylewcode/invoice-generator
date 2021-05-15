@@ -6,7 +6,7 @@ function updateLineItemQuantityByItemsDetailsQuantity(
   const newQuantity = parseFloat(quantity);
   return lineItems.map(item => {
     if (item.details === details) {
-      const newTotal = calculateTotalFromQuantityAndPrice(quantity, item.price);
+      const newTotal = formatCurrency(calculateTotalFromQuantityAndPrice(quantity, item.price));
       return {
         ...item,
         quantity: newQuantity,
@@ -29,23 +29,51 @@ function removeLineItemFromLineItemsByDetails(lineItems, details) {
 }
 
 const getLineItemsTotals = lineItems => {
-  return lineItems.map(item => item.total);
+  return lineItems.map(item => {
+    // During quantity change for an added line item, number is of type 'number'. To prevent an exception
+    //...this conditional ignores the unformatCurrency function.
+    if (typeof item.total === 'number') {
+      return item.total;
+    }
+    return unformatCurrency(item.total);
+  });
 };
+
+function formatCurrency(number) {
+  const numberCopy = number;
+  return '$'.concat(numberCopy.toFixed(2));
+}
+
+function unformatCurrency(number) {
+  if (Array.isArray(number)) {
+    const numberCopy = number[0];
+    return numberCopy.replace('$', '');
+  }
+  const numberCopy = number;
+  return parseFloat(numberCopy.replace('$', ''));
+}
 
 /* Math Calculations */
 const calculateTotalFromQuantityAndPrice = (quantity, price) => {
-  const priceInCents = price * 100;
+  if (typeof price === 'string') {
+    const unformattedPrice = unformatCurrency(price);
+    const priceInCents = convertDollarsToCents(unformattedPrice);
+    const total = (priceInCents * quantity) / 100;
+    return total;
+  }
+
+  const priceInCents = convertDollarsToCents(price);
   const total = (priceInCents * quantity) / 100;
-  return parseFloat(total.toFixed(2));
+  return total;
 };
 
-const convertDollarsToCents = dollars => {
+function convertDollarsToCents(dollars) {
   return Math.round(dollars * 100);
-};
+}
 
-const convertCentsToDollars = cents => {
+function convertCentsToDollars(cents) {
   return cents / 100;
-};
+}
 
 const calculateSubtotal = itemTotalsInDollars => {
   const itemTotalsInCents = itemTotalsInDollars.map(total =>
@@ -71,10 +99,7 @@ const calculateGrandTotal = (subTotal, tax) => {
   return convertCentsToDollars(grandTotal);
 };
 
-const calculateTaxAndTotalsByItemTotalsAndTaxRate = (
-  itemTotals,
-  taxRate
-) => {
+const calculateTaxAndTotalsByItemTotalsAndTaxRate = (itemTotals, taxRate) => {
   const subTotal = calculateSubtotal(itemTotals);
   const tax = calculateTax(taxRate, subTotal);
   const grandTotal = calculateGrandTotal(subTotal, tax);
@@ -91,4 +116,6 @@ export {
   removeLineItemFromLineItemsByDetails,
   calculateTaxAndTotalsByItemTotalsAndTaxRate,
   getLineItemsTotals,
+  formatCurrency,
+  unformatCurrency,
 };

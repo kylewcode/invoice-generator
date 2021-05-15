@@ -16,6 +16,7 @@ import Col from 'react-bootstrap/Col';
 import {
   updateLineItemQuantityByItemsDetailsQuantity,
   removeLineItemFromLineItemsByDetails,
+  formatCurrency,
 } from './utils/helper';
 
 const initialFormState = {
@@ -90,13 +91,13 @@ function formReducer(state, action) {
       const { grandTotal, tax, subTotal } = payload;
 
       updatedMeta = {
-        tax,
-        subtotal: subTotal,
+        tax: formatCurrency(tax),
+        subtotal: formatCurrency(subTotal),
         lineItems: state.meta.lineItems,
         memo: state.meta.memo,
       }
 
-      return {...state, total: grandTotal, meta: updatedMeta };
+      return {...state, total: formatCurrency(grandTotal), meta: updatedMeta };
 
     case 'UPDATE_MEMO':
       updatedMeta = {

@@ -5,14 +5,14 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { calculateTotalFromQuantityAndPrice } from '../utils/helper';
+import { calculateTotalFromQuantityAndPrice, formatCurrency, unformatCurrency } from '../utils/helper';
 
 function Item({ item, dispatch }) {
   const initialState = {
     details: item.details,
-    price: item.price,
+    price: formatCurrency(item.price),
     quantity: item.quantity,
-    total: item.price * item.quantity,
+    total: formatCurrency(calculateTotalFromQuantityAndPrice(item.quantity, item.price)),
   };
 
   // Each item has its own state which is sent to App when the item is added to the form.
@@ -24,7 +24,7 @@ function Item({ item, dispatch }) {
 
   const updateQuantityAndTotalInState = quantity => {
     const newTotal = calculateTotalFromQuantityAndPrice(quantity, state.price);
-    setState({ ...state, quantity: quantity, total: newTotal });
+    setState({ ...state, quantity: quantity, total: formatCurrency(newTotal) });
   };
 
   const handleQuantityChange = event => {
