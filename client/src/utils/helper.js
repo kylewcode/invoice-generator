@@ -6,7 +6,9 @@ function updateLineItemQuantityByItemsDetailsQuantity(
   const newQuantity = parseFloat(quantity);
   return lineItems.map(item => {
     if (item.details === details) {
-      const newTotal = formatCurrency(calculateTotalFromQuantityAndPrice(quantity, item.price));
+      const newTotal = formatCurrency(
+        calculateTotalFromQuantityAndPrice(quantity, item.price)
+      );
       return {
         ...item,
         quantity: newQuantity,
@@ -49,6 +51,30 @@ function checkInStateForDuplicateLineItem(lineItems, lineItem) {
 }
 
 /* Currency Formatting */
+
+function convertCurrencyDataTypes(extractedFormData) {
+  const dataCopy = { ...extractedFormData };
+  const keys = Object.keys(dataCopy);
+  for (const key of keys) {
+    if (key === 'total') {
+      dataCopy[key] = dataCopy[key].replace('$', '');
+    }
+    if (key !== 'total' && dataCopy[key][0] === '$') {
+      dataCopy[key] = parseFloat(dataCopy[key].replace('$', ''));
+    }
+    if (key === 'lineItems') {
+      for (const item of dataCopy[key]) {
+        const lineItemKeys = Object.keys(item);
+        for (const itemKey of lineItemKeys) {
+          if (item[itemKey][0] === '$') {
+            item[itemKey] = parseFloat(item[itemKey].replace('$', ''));
+          }
+        }
+      }
+    }
+  }
+  return dataCopy;
+}
 
 function formatCurrency(number) {
   const numberCopy = number;
@@ -129,5 +155,6 @@ export {
   getLineItemsTotals,
   formatCurrency,
   unformatCurrency,
-  checkInStateForDuplicateLineItem
+  checkInStateForDuplicateLineItem,
+  convertCurrencyDataTypes,
 };

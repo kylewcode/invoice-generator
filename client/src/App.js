@@ -13,11 +13,13 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 import {
   updateLineItemQuantityByItemsDetailsQuantity,
   removeLineItemFromLineItemsByDetails,
   formatCurrency,
+  convertCurrencyDataTypes,
 } from './utils/helper';
 
 const initialFormState = {
@@ -149,9 +151,53 @@ function App() {
     fetchData();
   }, []);
 
+  const handleSubmit = async event => {
+    event.preventDefault();
+
+    const {
+      total,
+      meta: { tax, subtotal, lineItems },
+    } = formState;
+
+    const extractedFormData = {
+      subtotal,
+      tax,
+      total,
+      lineItems,
+    };
+
+    // Most currency needs to be converted to Number. total may remain a string with no '$'
+    const convertedCurrencyFormData =
+      convertCurrencyDataTypes(extractedFormData);
+
+    const convertedSubtotal = convertedCurrencyFormData.subtotal;
+    const convertedTax = convertedCurrencyFormData.tax;
+    const convertedTotal = convertedCurrencyFormData.total;
+    const convertedLineItems = convertedCurrencyFormData.lineItems;
+
+    const body = {
+      customer_id: '40a863f6-2108-4319-b8eb-a76affe2313c',
+      meta: {
+        tax: convertedTax,
+        subtotal: convertedSubtotal,
+        lineItems: convertedLineItems,
+        memo: formState.meta.memo,
+      },
+      total: convertedTotal,
+      url: 'https://omni.fattmerchant.com/#/bill/',
+      send_now: false,
+    };
+
+    try {
+      await axios.post('http://localhost:5000/api/invoice', body);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <Container fluid>
-      <Form>
+      <Form onSubmit={event => handleSubmit(event)}>
         {APIdata ? (
           <Fragment>
             <Header />
@@ -175,6 +221,13 @@ function App() {
               </Col>
               <Col className='text-end'>
                 <Totals formState={formState} dispatch={dispatch} />
+              </Col>
+            </Row>
+            <Row className='justify-content-center mt-5'>
+              <Col xs={1}>
+                <Button variant='primary' type='submit'>
+                  Submit
+                </Button>
               </Col>
             </Row>
           </Fragment>
