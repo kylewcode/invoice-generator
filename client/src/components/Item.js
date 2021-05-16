@@ -31,6 +31,7 @@ function Item({ item, lineItemsState, dispatch }) {
       const errorMessage =
         'You cannot add duplicate line items to the invoice.';
       dispatch({ type: 'ERROR', payload: errorMessage });
+      return;
     }
     dispatch({ type: 'ADD_LINE_ITEM', payload: state });
   };

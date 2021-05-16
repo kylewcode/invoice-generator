@@ -7,6 +7,7 @@ import AddItems from './components/AddItems';
 import ItemList from './components/ItemList';
 import Memo from './components/Memo';
 import Totals from './components/Totals';
+import Error from './components/Error';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -30,7 +31,7 @@ const initialFormState = {
   total: 0,
   url: 'https://omni.fattmerchant.com/#/bill/',
   send_now: false,
-  errors: { message: ''},
+  error: { message: '' },
 };
 
 function formReducer(state, action) {
@@ -110,8 +111,11 @@ function formReducer(state, action) {
 
       return { ...state, meta: updatedMeta };
 
-    case 'ERROR': 
-      return {...state, errors: { message: payload } }
+    case 'ERROR':
+      return { ...state, error: { message: payload } };
+
+    case 'CLEAR_ERROR':
+      return { ...state, error: { message: '' } };
 
     default:
       return state;
@@ -142,7 +146,14 @@ function App() {
         {APIdata ? (
           <Fragment>
             <Header />
-            <AddItems APIdata={APIdata} lineItemsState={formState.meta.lineItems} dispatch={dispatch} />
+            {formState.error.message === '' ? null : (
+              <Error message={formState.error.message} dispatch={dispatch} />
+            )}
+            <AddItems
+              APIdata={APIdata}
+              lineItemsState={formState.meta.lineItems}
+              dispatch={dispatch}
+            />
             {formState.meta.lineItems.length > 0 ? (
               <ItemList
                 lineItems={formState.meta.lineItems}
