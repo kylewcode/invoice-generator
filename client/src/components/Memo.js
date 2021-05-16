@@ -4,7 +4,6 @@ import Form from 'react-bootstrap/Form';
 
 function Memo({ dispatch }) {
   const handleBlur = event => {
-    console.log(event.target.value);
     dispatch({ type: 'UPDATE_MEMO', payload: event.target.value });
   };
 

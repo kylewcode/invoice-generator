@@ -8,6 +8,7 @@ import ItemList from './components/ItemList';
 import Memo from './components/Memo';
 import Totals from './components/Totals';
 import Error from './components/Error';
+import Success from './components/Success';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -34,6 +35,7 @@ const initialFormState = {
   url: 'https://omni.fattmerchant.com/#/bill/',
   send_now: false,
   error: { message: '' },
+  success: { message: '' },
 };
 
 function formReducer(state, action) {
@@ -128,6 +130,13 @@ function formReducer(state, action) {
     case 'CLEAR_ERROR':
       return { ...state, error: { message: '' } };
 
+    case 'SUBMIT_SUCCESS':
+      return { ...state, success: { message: 'Invoice submitted!' } };
+
+    case 'RESET_FORM':
+      window.location.reload(false);
+      break;
+
     default:
       return state;
   }
@@ -153,6 +162,18 @@ function App() {
 
   const handleSubmit = async event => {
     event.preventDefault();
+
+    // If no line items or memo text has been added, prevent submission by throwing an error
+    if (
+      formState.meta.lineItems.length === 0 ||
+      formState.meta.memo === 'Default memo text'
+    ) {
+      dispatch({
+        type: 'ERROR',
+        payload: 'You have to add at least one line item and write a memo before submitting the invoice.',
+      });
+      return;
+    }
 
     const {
       total,
@@ -188,10 +209,14 @@ function App() {
       send_now: false,
     };
 
-    console.log(body);
-
     try {
       await axios.post('http://localhost:5000/api/invoice', body);
+      // Notify success
+      dispatch({ type: 'SUBMIT_SUCCESS' });
+      // Reset state
+      setTimeout(() => {
+        dispatch({ type: 'RESET_FORM' });
+      }, 2000);
     } catch (error) {
       console.log(error.message);
     }
@@ -203,9 +228,6 @@ function App() {
         {APIdata ? (
           <Fragment>
             <Header />
-            {formState.error.message === '' ? null : (
-              <Error message={formState.error.message} dispatch={dispatch} />
-            )}
             <AddItems
               APIdata={APIdata}
               lineItemsState={formState.meta.lineItems}
@@ -225,9 +247,35 @@ function App() {
                 <Totals formState={formState} dispatch={dispatch} />
               </Col>
             </Row>
+            <Row className='justify-content-center mt-4'>
+              <Col>
+                {formState.success.message === '' ? null : (
+                  <Success
+                    message={formState.success.message}
+                    dispatch={dispatch}
+                  />
+                )}
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                {formState.error.message === '' ? null : (
+                  <Error
+                    message={formState.error.message}
+                    dispatch={dispatch}
+                  />
+                )}
+              </Col>
+            </Row>
             <Row className='justify-content-center mt-5'>
               <Col xs={1}>
-                <Button variant='primary' type='submit'>
+                <Button
+                  variant='primary'
+                  type='submit'
+                  className={
+                    formState.success.message === '' ? '' : 'visually-hidden'
+                  }
+                >
                   Submit
                 </Button>
               </Col>
