@@ -5,20 +5,33 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { calculateTotalFromQuantityAndPrice, formatCurrency } from '../utils/helper';
+import {
+  calculateTotalFromQuantityAndPrice,
+  formatCurrency,
+  checkInStateForDuplicateLineItem,
+} from '../utils/helper';
 
-function Item({ item, dispatch }) {
+function Item({ item, lineItemsState, dispatch }) {
   const initialState = {
     details: item.details,
     price: formatCurrency(item.price),
     quantity: item.quantity,
-    total: formatCurrency(calculateTotalFromQuantityAndPrice(item.quantity, item.price)),
+    total: formatCurrency(
+      calculateTotalFromQuantityAndPrice(item.quantity, item.price)
+    ),
   };
 
   // Each item has its own state which is sent to App when the item is added to the form.
   const [state, setState] = useState(() => initialState);
 
   const addLineItemToInvoice = () => {
+    // If this is a duplicate line item, an error must be thrown to avoid bugs with calculating totals and removing/adding items.
+    const isDuplicate = checkInStateForDuplicateLineItem(lineItemsState, state);
+    if (isDuplicate) {
+      const errorMessage =
+        'You cannot add duplicate line items to the invoice.';
+      dispatch({ type: 'ERROR', payload: errorMessage });
+    }
     dispatch({ type: 'ADD_LINE_ITEM', payload: state });
   };
 

@@ -5,7 +5,7 @@ import Item from './Item';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-function AddItems({ APIdata, dispatch }) {
+function AddItems({ APIdata, lineItemsState, dispatch }) {
   return (
     <div>
       <h2>Choose your Product/Service</h2>
@@ -19,7 +19,7 @@ function AddItems({ APIdata, dispatch }) {
       {APIdata.map((item, index) => {
         return (
           <Fragment key={index}>
-            <Item item={item} dispatch={dispatch} />
+            <Item item={item} lineItemsState={lineItemsState} dispatch={dispatch} />
           </Fragment>
         );
       })}

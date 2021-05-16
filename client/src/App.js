@@ -17,7 +17,6 @@ import {
   updateLineItemQuantityByItemsDetailsQuantity,
   removeLineItemFromLineItemsByDetails,
   formatCurrency,
-  checkInStateForDuplicateLineItem,
 } from './utils/helper';
 
 const initialFormState = {
@@ -31,6 +30,7 @@ const initialFormState = {
   total: 0,
   url: 'https://omni.fattmerchant.com/#/bill/',
   send_now: false,
+  errors: { message: ''},
 };
 
 function formReducer(state, action) {
@@ -40,14 +40,6 @@ function formReducer(state, action) {
 
   switch (type) {
     case 'ADD_LINE_ITEM':
-      // If payload is a duplicate line item, return an error
-      const isDuplicate = checkInStateForDuplicateLineItem(
-        state.meta.lineItems,
-        payload
-      );
-      if (isDuplicate) {
-        throw new Error('Cannot add duplicate line items');
-      }
       lineItemsCopy = state.meta.lineItems.slice();
       lineItemsCopy.push(payload);
 
@@ -118,6 +110,9 @@ function formReducer(state, action) {
 
       return { ...state, meta: updatedMeta };
 
+    case 'ERROR': 
+      return {...state, errors: { message: payload } }
+
     default:
       return state;
   }
@@ -147,7 +142,7 @@ function App() {
         {APIdata ? (
           <Fragment>
             <Header />
-            <AddItems APIdata={APIdata} dispatch={dispatch} />
+            <AddItems APIdata={APIdata} lineItemsState={formState.meta.lineItems} dispatch={dispatch} />
             {formState.meta.lineItems.length > 0 ? (
               <ItemList
                 lineItems={formState.meta.lineItems}
