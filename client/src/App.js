@@ -239,11 +239,11 @@ function App() {
                 dispatch={dispatch}
               />
             ) : null}
-            <Row>
+            <Row className="mt-5">
               <Col>
                 <Memo dispatch={dispatch} />
               </Col>
-              <Col className='text-end'>
+              <Col className='text-end pe-5'>
                 <Totals formState={formState} dispatch={dispatch} />
               </Col>
             </Row>
@@ -267,11 +267,12 @@ function App() {
                 )}
               </Col>
             </Row>
-            <Row className='justify-content-center mt-5'>
+            <Row className='justify-content-center my-5'>
               <Col xs={1}>
                 <Button
                   variant='primary'
                   type='submit'
+                  size='lg'
                   className={
                     formState.success.message === '' ? '' : 'visually-hidden'
                   }

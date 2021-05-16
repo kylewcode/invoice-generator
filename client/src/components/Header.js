@@ -6,12 +6,12 @@ import Image from 'react-bootstrap/Image';
 
 function Header() {
   return (
-    <div>
-      <Row>
-        <Col>
+    <div className="mt-3">
+      <Row className="mb-4 border-bottom border-top border-2 rounded-pill">
+        <Col className="d-flex justify-content-evenly py-4">
           <Image src={logo} alt='Stax Pay by Fat Merchant' thumbnail />
         </Col>
-        <Col>
+        <Col className="d-flex align-items-center justify-content-center">
           <p>INVOICE NO: 93757430</p>
         </Col>
       </Row>

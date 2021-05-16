@@ -13,6 +13,7 @@ function Memo({ dispatch }) {
         <Form.Label>Memo</Form.Label>
         <Form.Control
           as='textarea'
+          placeholder='Enter your memo...'
           cols={2}
           rows={3}
           onBlur={event => handleBlur(event)}
