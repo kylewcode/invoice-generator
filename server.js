@@ -14,6 +14,8 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
+app.options('/api/invoice', cors(corsOptions));
+
 app.use(bodyParser.json());
 
 const {
@@ -82,8 +84,8 @@ app.post(
     .trim()
     .blacklist(/\[<>&'"\/\]/)
     .isLength({ min: 36, max: 36 }),
-  body('meta.subtotal').trim().isCurrency(),
-  body('meta.tax').trim().isCurrency(),
+  body('meta.subtotal').trim().isNumeric(),
+  body('meta.tax').trim().isNumeric(),
   body('meta.lineItems').isArray(),
   body('meta.lineItems.*').isObject(),
   body('meta.lineItems.*.id')
@@ -99,8 +101,8 @@ app.post(
     .isString()
     .blacklist(/\[<>&'"\/\]/),
   body('meta.lineItems.*.quantity').trim().isNumeric(),
-  body('meta.lineItems.*.price').trim().isCurrency(),
-  body('total').trim().isCurrency(),
+  body('meta.lineItems.*.price').trim().isNumeric(),
+  body('total').trim().isNumeric(),
   body('url').trim().isURL({ require_protocol: true }),
   body('send_now').isBoolean(),
   async (req, res) => {

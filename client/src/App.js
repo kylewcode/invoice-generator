@@ -188,6 +188,8 @@ function App() {
       send_now: false,
     };
 
+    console.log(body);
+
     try {
       await axios.post('http://localhost:5000/api/invoice', body);
     } catch (error) {
