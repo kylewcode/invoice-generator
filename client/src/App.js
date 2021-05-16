@@ -17,6 +17,7 @@ import {
   updateLineItemQuantityByItemsDetailsQuantity,
   removeLineItemFromLineItemsByDetails,
   formatCurrency,
+  checkInStateForDuplicateLineItem,
 } from './utils/helper';
 
 const initialFormState = {
@@ -39,6 +40,14 @@ function formReducer(state, action) {
 
   switch (type) {
     case 'ADD_LINE_ITEM':
+      // If payload is a duplicate line item, return an error
+      const isDuplicate = checkInStateForDuplicateLineItem(
+        state.meta.lineItems,
+        payload
+      );
+      if (isDuplicate) {
+        throw new Error('Cannot add duplicate line items');
+      }
       lineItemsCopy = state.meta.lineItems.slice();
       lineItemsCopy.push(payload);
 
@@ -95,9 +104,9 @@ function formReducer(state, action) {
         subtotal: formatCurrency(subTotal),
         lineItems: state.meta.lineItems,
         memo: state.meta.memo,
-      }
+      };
 
-      return {...state, total: formatCurrency(grandTotal), meta: updatedMeta };
+      return { ...state, total: formatCurrency(grandTotal), meta: updatedMeta };
 
     case 'UPDATE_MEMO':
       updatedMeta = {

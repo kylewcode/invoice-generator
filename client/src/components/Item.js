@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { calculateTotalFromQuantityAndPrice, formatCurrency, unformatCurrency } from '../utils/helper';
+import { calculateTotalFromQuantityAndPrice, formatCurrency } from '../utils/helper';
 
 function Item({ item, dispatch }) {
   const initialState = {

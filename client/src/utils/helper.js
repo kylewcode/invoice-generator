@@ -39,6 +39,17 @@ const getLineItemsTotals = lineItems => {
   });
 };
 
+function checkInStateForDuplicateLineItem(lineItems, lineItem) {
+  for (const item of lineItems) {
+    if (item.details === lineItem.details) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/* Currency Formatting */
+
 function formatCurrency(number) {
   const numberCopy = number;
   return '$'.concat(numberCopy.toFixed(2));
@@ -118,4 +129,5 @@ export {
   getLineItemsTotals,
   formatCurrency,
   unformatCurrency,
+  checkInStateForDuplicateLineItem
 };
