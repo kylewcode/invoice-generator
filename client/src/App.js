@@ -79,6 +79,16 @@ function formReducer(state, action) {
         lineItemsCopy,
         payload
       );
+      // Totals must equal zero when there are no line items
+      if (updatedRemovalLineItems.length === 0) {
+        updatedMeta = {
+          tax: '$0.00',
+          subtotal: '$0.00',
+          lineItems: updatedRemovalLineItems,
+          memo: state.meta.memo,
+        };
+        return { ...state, meta: updatedMeta, total: '$0.00' };
+      }
 
       updatedMeta = {
         tax: state.meta.tax,
@@ -86,7 +96,6 @@ function formReducer(state, action) {
         lineItems: updatedRemovalLineItems,
         memo: state.meta.memo,
       };
-
       return { ...state, meta: updatedMeta };
 
     case 'UPDATE_TOTALS_AND_TAX':
