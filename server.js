@@ -1,4 +1,5 @@
 require('dotenv').config();
+const lineItemsSeed = require('./seeds/seed');
 
 const express = require('express');
 const app = express();
@@ -28,46 +29,48 @@ const {
 // @access        Public
 app.get('/api/item', cors(corsOptions), async (req, res) => {
   try {
-    const options = {
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${process.env.TOKEN}`,
-      },
-    };
+    // const options = {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Accept: 'application/json',
+    //     Authorization: `Bearer ${process.env.TOKEN}`,
+    //   },
+    // };
 
-    const ThirdPartyAPIResponse = await axios.get(
-      'https://api.qd.fattpay.com/item',
-      options
-    );
+    // const ThirdPartyAPIResponse = await axios.get(
+    //   'https://api.qd.fattpay.com/item',
+    //   options
+    // );
 
-    const merchantCatalog = ThirdPartyAPIResponse.data.data;
+    // const merchantCatalog = ThirdPartyAPIResponse.data.data;
 
-    const prunedMerchantCatalog = merchantCatalog.map(item => {
-      const result = {};
-      result.details = item.details;
+    // const prunedMerchantCatalog = merchantCatalog.map(item => {
+    //   const result = {};
+    //   result.details = item.details;
 
-      // Need to count for inaccuracy of floating point number type in Javascript
-      result.price = preventPriceCalculationErrors(item.price);
+    //   // Need to count for inaccuracy of floating point number type in Javascript
+    //   result.price = preventPriceCalculationErrors(item.price);
 
-      result.quantity = 1;
+    //   result.quantity = 1;
 
-      // Calculations must be converted back to dollar decimal currency format
-      result.total = (result.price * result.quantity) / 100;
-      result.price = result.price / 100;
+    //   // Calculations must be converted back to dollar decimal currency format
+    //   result.total = (result.price * result.quantity) / 100;
+    //   result.price = result.price / 100;
 
-      return result;
-    });
+    //   return result;
+    // });
 
-    if (validateLineItems(prunedMerchantCatalog)) {
-      console.log('Catalog validated.');
-      return res.json(prunedMerchantCatalog);
-    }
-    res
-      .status(500)
-      .send(
-        'An external service has returned unusable data. Please contact administrator for assistance.'
-      );
+    // if (validateLineItems(prunedMerchantCatalog)) {
+    //   console.log('Catalog validated.');
+    //   return res.json(prunedMerchantCatalog);
+    // }
+    // res
+    //   .status(500)
+    //   .send(
+    //     'An external service has returned unusable data. Please contact administrator for assistance.'
+    //   );
+
+    res.send(lineItemsSeed)
   } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error');
@@ -114,21 +117,22 @@ app.post(
 
       const requestBody = req.body;
 
-      const options = {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: `Bearer ${process.env.TOKEN}`,
-        },
-      };
+      // const options = {
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Accept: 'application/json',
+      //     Authorization: `Bearer ${process.env.TOKEN}`,
+      //   },
+      // };
 
-      await axios.post(
-        'https://api.qd.fattpay.com/invoice',
-        requestBody,
-        options
-      );
+      // await axios.post(
+      //   'https://api.qd.fattpay.com/invoice',
+      //   requestBody,
+      //   options
+      // );
 
-      res.status(200).send('Invoice Submitted');
+      // res.status(200).send('Invoice Submitted');
+      res.status(200).json(requestBody);
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error');

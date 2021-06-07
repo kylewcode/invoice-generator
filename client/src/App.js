@@ -133,6 +133,10 @@ function formReducer(state, action) {
     case 'SUBMIT_SUCCESS':
       return { ...state, success: { message: 'Invoice submitted!' } };
 
+    case 'DISPLAY_INVOICE':
+      console.log('Invoice displaying...');
+      return  state;
+
     case 'RESET_FORM':
       window.location.reload(false);
       break;
@@ -213,10 +217,13 @@ function App() {
       await axios.post('http://localhost:5000/api/invoice', body);
       // Notify success
       dispatch({ type: 'SUBMIT_SUCCESS' });
+      // Posted invoices have UI that exists within the StaxPay application. Since there may not be access to that application I
+      //  have made some UI to display on the client the data that was submitted to create the invoice.
+      dispatch({ type: 'DISPLAY_INVOICE' });
       // Reset state
-      setTimeout(() => {
-        dispatch({ type: 'RESET_FORM' });
-      }, 2000);
+      // setTimeout(() => {
+      //   dispatch({ type: 'RESET_FORM' });
+      // }, 10000);
     } catch (error) {
       console.log(error.message);
     }
