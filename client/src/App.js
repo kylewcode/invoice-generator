@@ -33,7 +33,7 @@ const initialFormState = {
     tax: 0,
     subtotal: 0,
     lineItems: [],
-    memo: 'Default memo text',
+    memo: '',
   },
   total: 0,
   url: 'https://omni.fattmerchant.com/#/bill/',
@@ -123,7 +123,7 @@ function formReducer(state, action) {
         tax: state.meta.tax,
         subtotal: state.meta.subtotal,
         lineItems: state.meta.lineItems,
-        memo: payload,
+        memo: payload.trim(),
       };
 
       return { ...state, meta: updatedMeta };
@@ -176,7 +176,7 @@ function App() {
     // If no line items or memo text has been added, prevent submission by throwing an error
     if (
       formState.meta.lineItems.length === 0 ||
-      formState.meta.memo === 'Default memo text'
+      formState.meta.memo.trim() === '' 
     ) {
       dispatch({
         type: 'ERROR',
