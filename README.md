@@ -4,7 +4,7 @@ Invoice Generator retrieves a list of available products and services from the S
 
 ## Installation
 
-Requires the package manager [npm](https://www.npmjs.com/) to install Invoice Generator as well as [node](https://nodejs.org).
+Requires the package manager [npm](https://www.npmjs.com/) to install Invoice Generator as well as [node](https://nodejs.org) version 14.15.4 or higher.
 
 Make a clone of this repo or fork it.
 
