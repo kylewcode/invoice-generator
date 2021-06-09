@@ -10,6 +10,8 @@ import Totals from './components/Totals';
 import Error from './components/Error';
 import Success from './components/Success';
 
+import Modal from 'react-modal';
+
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -22,6 +24,8 @@ import {
   formatCurrency,
   convertCurrencyDataTypes,
 } from './utils/helper';
+
+Modal.setAppElement('#root');
 
 const initialFormState = {
   customer_id: '40a863f6-2108-4319-b8eb-a76affe2313c',
@@ -133,10 +137,6 @@ function formReducer(state, action) {
     case 'SUBMIT_SUCCESS':
       return { ...state, success: { message: 'Invoice submitted!' } };
 
-    case 'DISPLAY_INVOICE':
-      console.log('Invoice displaying...');
-      return  state;
-
     case 'RESET_FORM':
       window.location.reload(false);
       break;
@@ -151,6 +151,8 @@ function App() {
 
   const [formState, dispatch] = useReducer(formReducer, initialFormState);
 
+  const [modalIsOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -164,6 +166,10 @@ function App() {
     fetchData();
   }, []);
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
   const handleSubmit = async event => {
     event.preventDefault();
 
@@ -174,7 +180,8 @@ function App() {
     ) {
       dispatch({
         type: 'ERROR',
-        payload: 'You have to add at least one line item and write a memo before submitting the invoice.',
+        payload:
+          'You have to add at least one line item and write a memo before submitting the invoice.',
       });
       return;
     }
@@ -219,8 +226,11 @@ function App() {
       dispatch({ type: 'SUBMIT_SUCCESS' });
       // Posted invoices have UI that exists within the StaxPay application. Since there may not be access to that application I
       //  have made some UI to display on the client the data that was submitted to create the invoice.
-      dispatch({ type: 'DISPLAY_INVOICE' });
-      // Reset state
+      setTimeout(() => {
+        openModal();
+        return;
+      }, 3000);
+      // Reset state. This was the original application behavior when there was no modal.
       // setTimeout(() => {
       //   dispatch({ type: 'RESET_FORM' });
       // }, 10000);
@@ -229,8 +239,45 @@ function App() {
     }
   };
 
+  const displayLineItems = lineItems => {
+    return lineItems.map((item, index) => {
+      return (
+        <li key={index}>
+          Details: {item.details} | Quantity: {item.quantity} | Price:{' '}
+          {item.price} | Total: {item.total}
+        </li>
+      );
+    });
+  };
+
+  const resetForm = () => {
+    dispatch({ type: 'RESET_FORM' });
+  };
+
   return (
     <Container fluid>
+      <Modal isOpen={modalIsOpen}>
+        <h2>Here is the data you submitted to create an invoice.</h2>
+        <h3>Customer Id</h3>
+        <p>{formState.customer_id}</p>
+        <h3>Tax</h3>
+        <p>{formState.meta.tax}</p>
+        <h3>Subtotal</h3>
+        <p>{formState.meta.subtotal}</p>
+        <h3>Line Items</h3>
+        <ul>{displayLineItems(formState.meta.lineItems)}</ul>
+        <h3>Memo</h3>
+        <p>{formState.meta.memo}</p>
+        <h3>Total</h3>
+        <p>{formState.total}</p>
+        <h3>URL</h3>
+        <p>{formState.url}</p>
+        <h3>Send Now</h3>
+        <p>{formState.send_now.toString()}</p>
+        <button type='button' onClick={resetForm}>
+          Reset Form
+        </button>
+      </Modal>
       <Form onSubmit={event => handleSubmit(event)}>
         {APIdata ? (
           <Fragment>
@@ -246,7 +293,7 @@ function App() {
                 dispatch={dispatch}
               />
             ) : null}
-            <Row className="mt-5">
+            <Row className='mt-5'>
               <Col>
                 <Memo dispatch={dispatch} />
               </Col>
