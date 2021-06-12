@@ -11,7 +11,7 @@ const { body, validationResult } = require('express-validator');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://kylewcode-invoice-generator.netlify.app/',
   optionsSuccessStatus: 200,
 };
 
@@ -141,5 +141,5 @@ app.post(
 );
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Listening at port: ${port}`);
 });
