@@ -156,7 +156,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/item');
+        const res = await axios.get('https://kylewcode-invoice-generator.herokuapp.com/api/item');
         setData(res.data);
       } catch (error) {
         console.log(error.message);
@@ -221,7 +221,7 @@ function App() {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/invoice', body);
+      await axios.post('https://kylewcode-invoice-generator.herokuapp.com/api/invoice', body);
       // Notify success
       dispatch({ type: 'SUBMIT_SUCCESS' });
       // Posted invoices have UI that exists within the StaxPay application. Since there may not be access to that application I
