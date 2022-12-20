@@ -1,33 +1,34 @@
-require('dotenv').config();
-const lineItemsSeed = require('./seeds/seed');
+require("dotenv").config();
+const lineItemsSeed = require("./seeds/seed");
 
-const express = require('express');
+const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 
-const bodyParser = require('body-parser');
-const axios = require('axios');
-const { body, validationResult } = require('express-validator');
-const cors = require('cors');
+const bodyParser = require("body-parser");
+const axios = require("axios");
+const { body, validationResult } = require("express-validator");
+const cors = require("cors");
 
 const corsOptions = {
-  origin: 'https://kylewcode-invoice-generator.netlify.app',
+  // origin: 'https://kylewcode-invoice-generator.netlify.app',
+  origin: "http://localhost:3000",
   optionsSuccessStatus: 200,
 };
 
-app.options('/api/invoice', cors(corsOptions));
+app.options("/api/invoice", cors(corsOptions));
 
 app.use(bodyParser.json());
 
 const {
   preventPriceCalculationErrors,
   validateLineItems,
-} = require('./utils/helper');
+} = require("./utils/helper");
 
 // @method        GET
 // @description   Fetches all line items details/price for the merchant's catalog.
 // @access        Public
-app.get('/api/item', cors(corsOptions), async (req, res) => {
+app.get("/api/item", cors(corsOptions), async (req, res) => {
   try {
     // const options = {
     //   headers: {
@@ -70,10 +71,10 @@ app.get('/api/item', cors(corsOptions), async (req, res) => {
     //     'An external service has returned unusable data. Please contact administrator for assistance.'
     //   );
 
-    res.send(lineItemsSeed)
+    res.send(lineItemsSeed);
   } catch (error) {
     console.error(error.message);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 });
 
@@ -81,33 +82,33 @@ app.get('/api/item', cors(corsOptions), async (req, res) => {
 // @description   Creates a new invoice for the given customer
 // @access        Public
 app.post(
-  '/api/invoice',
+  "/api/invoice",
   cors(corsOptions),
-  body('customer_id')
+  body("customer_id")
     .trim()
     .blacklist(/\[<>&'"\/\]/)
     .isLength({ min: 36, max: 36 }),
-  body('meta.subtotal').trim().isNumeric(),
-  body('meta.tax').trim().isNumeric(),
-  body('meta.lineItems').isArray(),
-  body('meta.lineItems.*').isObject(),
-  body('meta.lineItems.*.id')
+  body("meta.subtotal").trim().isNumeric(),
+  body("meta.tax").trim().isNumeric(),
+  body("meta.lineItems").isArray(),
+  body("meta.lineItems.*").isObject(),
+  body("meta.lineItems.*.id")
     .trim()
     .isString()
     .blacklist(/\[<>&'"\/\]/),
-  body('meta.lineItems.*.item')
+  body("meta.lineItems.*.item")
     .trim()
     .isString()
     .blacklist(/\[<>&'"\/\]/),
-  body('meta.lineItems.*.details')
+  body("meta.lineItems.*.details")
     .trim()
     .isString()
     .blacklist(/\[<>&'"\/\]/),
-  body('meta.lineItems.*.quantity').trim().isNumeric(),
-  body('meta.lineItems.*.price').trim().isNumeric(),
-  body('total').trim().isNumeric(),
-  body('url').trim().isURL({ require_protocol: true }),
-  body('send_now').isBoolean(),
+  body("meta.lineItems.*.quantity").trim().isNumeric(),
+  body("meta.lineItems.*.price").trim().isNumeric(),
+  body("total").trim().isNumeric(),
+  body("url").trim().isURL({ require_protocol: true }),
+  body("send_now").isBoolean(),
   async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -135,7 +136,7 @@ app.post(
       res.status(200).json(requestBody);
     } catch (error) {
       console.error(error.message);
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
   }
 );
