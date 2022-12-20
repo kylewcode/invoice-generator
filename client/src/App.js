@@ -36,7 +36,7 @@ const initialFormState = {
     memo: "",
   },
   total: 0,
-  url: "https://omni.fattmerchant.com/#/bill/",
+  url: "https://www.example.com",
   send_now: false,
   error: { message: "" },
   success: { message: "" },

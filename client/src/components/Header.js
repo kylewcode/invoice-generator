@@ -1,15 +1,12 @@
-import logo from '../img/staxpaybyfattmerchant.png';
-
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function Header() {
   return (
     <div className="mt-3">
-      <Row className="mb-4 border-bottom border-top border-2 rounded-pill">
+      <Row className="mb-5 border">
         <Col className="d-flex justify-content-evenly py-4">
-          <Image src={logo} alt='Stax Pay by Fat Merchant' thumbnail />
+          <h1>Invoice Generator</h1>
         </Col>
         <Col className="d-flex align-items-center justify-content-center">
           <p>INVOICE NO: 93757430</p>
@@ -20,7 +17,7 @@ function Header() {
           <p>BILL TO:</p>
           <p>ABIGAYLE BOOKER</p>
           <p>440 E. Foxrun Drive Oklahoma City, OK 73112</p>
-          <p>Email: daniel+qdemoAbigayle.Booker@fattmerchant.com</p>
+          <p>Email: someone@example.com</p>
           <p>Phone: (999) 999-9999</p>
         </Col>
         <Col>
