@@ -30,46 +30,61 @@ const {
 // @access        Public
 app.get("/api/item", cors(corsOptions), async (req, res) => {
   try {
-    // const options = {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     Accept: 'application/json',
-    //     Authorization: `Bearer ${process.env.TOKEN}`,
-    //   },
-    // };
+    // NOTE: Authorization to 3rd party API was temporary. Now that the token is no longer valid, I've commented out the code that
+    // interacts with it. In place I have passed lineItemsSeed to the response which mimics the data that was fetched from the 3rd party API.
 
-    // const ThirdPartyAPIResponse = await axios.get(
-    //   'https://api.qd.fattpay.com/item',
-    //   options
-    // );
+    /* Expected data structure is an array of one or more objects with the following data structure:
+      {
+        details: String,
+        price: Number,
+        quantity: Number,
+        total: Number
+      }
+    */
 
-    // const merchantCatalog = ThirdPartyAPIResponse.data.data;
+    // Code to inteact with 3rd party API.
+    /*
+    const options = {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${process.env.TOKEN}`,
+      },
+    };
 
-    // const prunedMerchantCatalog = merchantCatalog.map(item => {
-    //   const result = {};
-    //   result.details = item.details;
+    const ThirdPartyAPIResponse = await axios.get(
+      'https://api.qd.fattpay.com/item',
+      options
+    );
 
-    //   // Need to count for inaccuracy of floating point number type in Javascript
-    //   result.price = preventPriceCalculationErrors(item.price);
+    const merchantCatalog = ThirdPartyAPIResponse.data.data;
 
-    //   result.quantity = 1;
+    const prunedMerchantCatalog = merchantCatalog.map(item => {
+      const result = {};
+      result.details = item.details;
 
-    //   // Calculations must be converted back to dollar decimal currency format
-    //   result.total = (result.price * result.quantity) / 100;
-    //   result.price = result.price / 100;
+      // Need to count for inaccuracy of floating point number type in Javascript
+      result.price = preventPriceCalculationErrors(item.price);
 
-    //   return result;
-    // });
+      result.quantity = 1;
 
-    // if (validateLineItems(prunedMerchantCatalog)) {
-    //   console.log('Catalog validated.');
-    //   return res.json(prunedMerchantCatalog);
-    // }
-    // res
-    //   .status(500)
-    //   .send(
-    //     'An external service has returned unusable data. Please contact administrator for assistance.'
-    //   );
+      // Calculations must be converted back to dollar decimal currency format
+      result.total = (result.price * result.quantity) / 100;
+      result.price = result.price / 100;
+
+      return result;
+    });
+
+    if (validateLineItems(prunedMerchantCatalog)) {
+      console.log('Catalog validated.');
+      return res.json(prunedMerchantCatalog);
+    }
+    res
+      .status(500)
+      .send(
+        'An external service has returned unusable data. Please contact administrator for assistance.'
+      );
+    */
 
     res.send(lineItemsSeed);
   } catch (error) {
@@ -118,21 +133,24 @@ app.post(
 
       const requestBody = req.body;
 
-      // const options = {
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Accept: 'application/json',
-      //     Authorization: `Bearer ${process.env.TOKEN}`,
-      //   },
-      // };
+      // Code to inteact with 3rd party API.
+      /*
+      const options = {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Authorization: `Bearer ${process.env.TOKEN}`,
+        },
+      };
 
-      // await axios.post(
-      //   'https://api.qd.fattpay.com/invoice',
-      //   requestBody,
-      //   options
-      // );
+      await axios.post(
+        'https://api.qd.fattpay.com/invoice',
+        requestBody,
+        options
+      );
 
-      // res.status(200).send('Invoice Submitted');
+      res.status(200).send('Invoice Submitted');
+      */
       res.status(200).json(requestBody);
     } catch (error) {
       console.error(error.message);
