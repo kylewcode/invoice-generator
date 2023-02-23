@@ -37,27 +37,23 @@ function ItemList({ lineItems, dispatch }) {
   };
 
   return (
-    <div>
-      <h2>Your Products/Services</h2>
-      <Row className="text-end justify-content-md-right fw-bold">
-        <Col>Details</Col>
-        <Col xs={2}>Price</Col>
-        <Col xs={1}>Quantity</Col>
-        <Col xs={2}>Total</Col>
-        <Col xs={1}>Remove</Col>
+    <div className="py-3 colored-underline">
+      <h2 className="py-4 light-blue">Your Products/Services</h2>
+      <Row className="m-0 text-start justify-content-start fw-bold colored-underline light-blue">
+        <Col xs={5}>Details</Col>
+        <Col>Quantity</Col>
+        <Col>Price</Col>
+        <Col>Total</Col>
+        <Col>Remove</Col>
       </Row>
       {lineItems.map((item, index) => {
         return (
           <Fragment key={index}>
-            {/* Items here do not need their own state since they inherit state from App */}
-            <Row className="text-end justify-content-md-right">
-              <Col>
+            <Row className="text-start justify-content-start my-3">
+              <Col xs={5}>
                 <div name="details">{item.details}</div>
               </Col>
-              <Col xs={2}>
-                <div name="price">{item.price}</div>
-              </Col>
-              <Col xs={1}>
+              <Col>
                 <Form.Control
                   name="quantity"
                   type="number"
@@ -67,11 +63,15 @@ function ItemList({ lineItems, dispatch }) {
                   onChange={(event) => handleQuantityChange(event)}
                 />
               </Col>
-              <Col xs={2}>
+              <Col>
+                <div name="price">{item.price}</div>
+              </Col>
+              <Col>
                 <div name="total">{item.total}</div>
               </Col>
-              <Col xs={1}>
+              <Col className="text-end">
                 <Button
+                  className="button-style"
                   data-details={item.details}
                   onClick={(event) => removeLineItemFromInvoice(event)}
                 >

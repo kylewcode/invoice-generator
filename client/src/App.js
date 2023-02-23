@@ -1,5 +1,5 @@
-import { useState, useReducer, useEffect, Fragment } from "react";
-
+import { useState, useReducer, useEffect } from "react";
+import "./styles/App.css";
 import axios from "axios";
 
 import Header from "./components/Header";
@@ -177,7 +177,6 @@ function App() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // If no line items or memo text has been added, prevent submission by throwing an error
     if (
       formState.meta.lineItems.length === 0 ||
       formState.meta.memo.trim() === ""
@@ -202,7 +201,6 @@ function App() {
       lineItems,
     };
 
-    // Most currency needs to be converted to Number. total may remain a string with no '$'
     const convertedCurrencyFormData =
       convertCurrencyDataTypes(extractedFormData);
 
@@ -229,11 +227,11 @@ function App() {
         "https://kylewcode-invoice-generator.herokuapp.com/api/invoice",
         body
       );
-      // URL for local development.
       // await axios.post("http://localhost:5000/api/invoice", body);
-
       dispatch({ type: "SUBMIT_SUCCESS" });
 
+      // Posted invoices have UI that exists within the StaxPay application. Since there may not be access to that application I
+      //  have made some UI to display on the client the data that was submitted to create the invoice.
       setTimeout(() => {
         openModal();
         return;
@@ -259,90 +257,90 @@ function App() {
   };
 
   return (
-    <Container fluid>
-      <Modal isOpen={modalIsOpen}>
-        <h2>Here is the data you submitted to create an invoice.</h2>
-        <h3>Customer Id</h3>
-        <p>{formState.customer_id}</p>
-        <h3>Tax</h3>
-        <p>{formState.meta.tax}</p>
-        <h3>Subtotal</h3>
-        <p>{formState.meta.subtotal}</p>
-        <h3>Line Items</h3>
-        <ul>{displayLineItems(formState.meta.lineItems)}</ul>
-        <h3>Memo</h3>
-        <p>{formState.meta.memo}</p>
-        <h3>Total</h3>
-        <p>{formState.total}</p>
-        <h3>URL</h3>
-        <p>{formState.url}</p>
-        <h3>Send Now</h3>
-        <p>{formState.send_now.toString()}</p>
-        <button type="button" onClick={resetForm}>
-          Reset Form
-        </button>
-      </Modal>
-      <Form onSubmit={(event) => handleSubmit(event)}>
-        {APIdata ? (
-          <Fragment>
-            <Header />
-            <AddItems
-              APIdata={APIdata}
-              lineItemsState={formState.meta.lineItems}
-              dispatch={dispatch}
-            />
-            {formState.meta.lineItems.length > 0 ? (
-              <ItemList
-                lineItems={formState.meta.lineItems}
+    <>
+      <Container className="p-0">
+        <Header />
+      </Container>
+      <Container fluid className="form-container p-4">
+        <Modal isOpen={modalIsOpen}>
+          <h2>Here is the data you submitted to create an invoice.</h2>
+          <h3>Line Items</h3>
+          <ul>{displayLineItems(formState.meta.lineItems)}</ul>
+          <h3>Tax</h3>
+          <p>{formState.meta.tax}</p>
+          <h3>Subtotal</h3>
+          <p>{formState.meta.subtotal}</p>
+          <h3>Total</h3>
+          <p>{formState.total}</p>
+          <h3>Memo</h3>
+          <p>{formState.meta.memo}</p>
+          <button type="button" onClick={resetForm}>
+            Reset Form
+          </button>
+        </Modal>
+        <Form onSubmit={(event) => handleSubmit(event)}>
+          {APIdata ? (
+            <>
+              <AddItems
+                APIdata={APIdata}
+                lineItemsState={formState.meta.lineItems}
                 dispatch={dispatch}
               />
-            ) : null}
-            <Row className="mt-5">
-              <Col>
-                <Memo dispatch={dispatch} />
-              </Col>
-              <Col className="text-end pe-5">
-                <Totals formState={formState} dispatch={dispatch} />
-              </Col>
-            </Row>
-            <Row className="justify-content-center mt-4">
-              <Col>
-                {formState.success.message === "" ? null : (
-                  <Success
-                    message={formState.success.message}
-                    dispatch={dispatch}
-                  />
-                )}
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                {formState.error.message === "" ? null : (
-                  <Error
-                    message={formState.error.message}
-                    dispatch={dispatch}
-                  />
-                )}
-              </Col>
-            </Row>
-            <Row className="justify-content-center my-5">
-              <Col xs={1}>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  size="lg"
-                  className={
-                    formState.success.message === "" ? "" : "visually-hidden"
-                  }
-                >
-                  Submit
-                </Button>
-              </Col>
-            </Row>
-          </Fragment>
-        ) : null}
-      </Form>
-    </Container>
+              {formState.meta.lineItems.length > 0 ? (
+                <ItemList
+                  lineItems={formState.meta.lineItems}
+                  dispatch={dispatch}
+                />
+              ) : null}
+              <Row className="mt-5">
+                <Col>
+                  <Memo dispatch={dispatch} />
+                </Col>
+                <Col className="text-end">
+                  <Totals formState={formState} dispatch={dispatch} />
+                </Col>
+              </Row>
+              <Row className="justify-content-center mt-4">
+                <Col>
+                  {formState.success.message === "" ? null : (
+                    <Success
+                      message={formState.success.message}
+                      dispatch={dispatch}
+                    />
+                  )}
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  {formState.error.message === "" ? null : (
+                    <Error
+                      message={formState.error.message}
+                      dispatch={dispatch}
+                    />
+                  )}
+                </Col>
+              </Row>
+              <Row className="text-center my-5">
+                <Col>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    size="lg"
+                    className={
+                      formState.success.message === ""
+                        ? "button-style"
+                        : "visually-hidden"
+                    }
+                  >
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
+            </>
+          ) : null}
+        </Form>
+      </Container>
+    </>
   );
 }
 
