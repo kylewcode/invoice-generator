@@ -1,0 +1,29 @@
+.button-style {
+  background-color: #0b3954 !important;
+  border-color: #0b3954 !important;
+}
+
+.button-style:hover {
+  background-color: #83bded !important;
+}
+
+.app-title {
+  font-size: 4rem;
+}
+
+.invoice-number {
+  font-size: 2rem;
+  margin: 0.5rem;
+}
+
+.form-container {
+  background-color: #fefffe;
+}
+
+.colored-underline {
+  border-bottom: 3px solid #0b3954;
+}
+
+.light-blue {
+  color: #83bded;
+}

@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 import {
   calculateTotalFromQuantityAndPrice,
   formatCurrency,
   checkInStateForDuplicateLineItem,
-} from '../utils/helper';
+} from "../utils/helper";
 
 function Item({ item, lineItemsState, dispatch }) {
   const initialState = {
@@ -29,45 +29,47 @@ function Item({ item, lineItemsState, dispatch }) {
     const isDuplicate = checkInStateForDuplicateLineItem(lineItemsState, state);
     if (isDuplicate) {
       const errorMessage =
-        'You cannot add duplicate line items to the invoice.';
-      dispatch({ type: 'ERROR', payload: errorMessage });
+        "You cannot add duplicate line items to the invoice.";
+      dispatch({ type: "ERROR", payload: errorMessage });
       return;
     }
-    dispatch({ type: 'ADD_LINE_ITEM', payload: state });
+    dispatch({ type: "ADD_LINE_ITEM", payload: state });
   };
 
-  const updateQuantityAndTotalInState = quantity => {
+  const updateQuantityAndTotalInState = (quantity) => {
     const newTotal = calculateTotalFromQuantityAndPrice(quantity, state.price);
     setState({ ...state, quantity: quantity, total: formatCurrency(newTotal) });
   };
 
-  const handleQuantityChange = event => {
+  const handleQuantityChange = (event) => {
     const quantity = parseInt(event.target.value);
     updateQuantityAndTotalInState(quantity);
   };
 
   return (
-    <Row className='text-end justify-content-md-right'>
+    <Row className="text-start justify-content-start align-items-center my-3">
+      <Col xs={5}>
+        <div name="details">{state.details}</div>
+      </Col>
       <Col>
-        <div name='details'>{state.details}</div>
-      </Col>
-      <Col xs={2}>
-        <div name='price'>{state.price}</div>
-      </Col>
-      <Col xs={1}>
         <Form.Control
-          name='quantity'
-          type='number'
-          defaultValue='1'
-          min='1'
-          onChange={event => handleQuantityChange(event)}
+          name="quantity"
+          type="number"
+          defaultValue="1"
+          min="1"
+          onChange={(event) => handleQuantityChange(event)}
         />
       </Col>
-      <Col xs={2}>
-        <div name='total'>{state.total}</div>
+      <Col>
+        <div name="price">{state.price}</div>
       </Col>
-      <Col xs={1}>
-        <Button onClick={addLineItemToInvoice}>+</Button>
+      <Col>
+        <div name="total">{state.total}</div>
+      </Col>
+      <Col className="text-end">
+        <Button className="button-style" onClick={addLineItemToInvoice}>
+          +
+        </Button>
       </Col>
     </Row>
   );
