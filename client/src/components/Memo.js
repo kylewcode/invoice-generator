@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-
 import Form from "react-bootstrap/Form";
 
 function Memo({ dispatch }) {
@@ -8,7 +6,7 @@ function Memo({ dispatch }) {
   };
 
   return (
-    <Fragment>
+    <>
       <Form.Group controlId="memo-text-area">
         <Form.Label className="light-blue fw-bold">Memo</Form.Label>
         <Form.Control
@@ -19,7 +17,7 @@ function Memo({ dispatch }) {
           onBlur={(event) => handleBlur(event)}
         />
       </Form.Group>
-    </Fragment>
+    </>
   );
 }
 

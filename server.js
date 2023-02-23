@@ -11,8 +11,8 @@ const { body, validationResult } = require("express-validator");
 const cors = require("cors");
 
 const corsOptions = {
-  // origin: 'https://kylewcode-invoice-generator.netlify.app',
-  origin: "http://localhost:3000",
+  origin: "https://kylewcode-invoice-generator.netlify.app",
+  // origin: "http://localhost:3000",
   optionsSuccessStatus: 200,
 };
 

@@ -49,7 +49,6 @@ function ItemList({ lineItems, dispatch }) {
       {lineItems.map((item, index) => {
         return (
           <Fragment key={index}>
-            {/* Items here do not need their own state since they inherit state from App */}
             <Row className="text-start justify-content-start my-3">
               <Col xs={5}>
                 <div name="details">{item.details}</div>
@@ -58,7 +57,6 @@ function ItemList({ lineItems, dispatch }) {
                 <Form.Control
                   name="quantity"
                   type="number"
-                  // defaultValue={item.quantity}
                   value={item.quantity}
                   min="1"
                   data-details={item.details}

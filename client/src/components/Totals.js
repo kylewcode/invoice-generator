@@ -1,5 +1,3 @@
-import { Fragment } from "react";
-
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
@@ -10,7 +8,7 @@ function Totals({
   },
 }) {
   return (
-    <Fragment>
+    <>
       <Row>
         <Col>SUB TOTAL:</Col>
         <Col className="light-blue fw-bold" xs={5}>
@@ -29,7 +27,7 @@ function Totals({
           {total}
         </Col>
       </Row>
-    </Fragment>
+    </>
   );
 }
 

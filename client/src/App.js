@@ -174,7 +174,6 @@ function App() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // If no line items or memo text has been added, prevent submission by throwing an error
     if (
       formState.meta.lineItems.length === 0 ||
       formState.meta.memo.trim() === ""
@@ -199,7 +198,6 @@ function App() {
       lineItems,
     };
 
-    // Most currency needs to be converted to Number. total may remain a string with no '$'
     const convertedCurrencyFormData =
       convertCurrencyDataTypes(extractedFormData);
 
@@ -222,10 +220,13 @@ function App() {
     };
 
     try {
-      // await axios.post('https://kylewcode-invoice-generator.herokuapp.com/api/invoice', body);
-      await axios.post("http://localhost:5000/api/invoice", body);
-      // Notify success
+      await axios.post(
+        "https://kylewcode-invoice-generator.herokuapp.com/api/invoice",
+        body
+      );
+      // await axios.post("http://localhost:5000/api/invoice", body);
       dispatch({ type: "SUBMIT_SUCCESS" });
+
       // Posted invoices have UI that exists within the StaxPay application. Since there may not be access to that application I
       //  have made some UI to display on the client the data that was submitted to create the invoice.
       setTimeout(() => {
@@ -264,22 +265,16 @@ function App() {
       <Container fluid className="form-container p-4">
         <Modal isOpen={modalIsOpen}>
           <h2>Here is the data you submitted to create an invoice.</h2>
-          <h3>Customer Id</h3>
-          <p>{formState.customer_id}</p>
+          <h3>Line Items</h3>
+          <ul>{displayLineItems(formState.meta.lineItems)}</ul>
           <h3>Tax</h3>
           <p>{formState.meta.tax}</p>
           <h3>Subtotal</h3>
           <p>{formState.meta.subtotal}</p>
-          <h3>Line Items</h3>
-          <ul>{displayLineItems(formState.meta.lineItems)}</ul>
-          <h3>Memo</h3>
-          <p>{formState.meta.memo}</p>
           <h3>Total</h3>
           <p>{formState.total}</p>
-          <h3>URL</h3>
-          <p>{formState.url}</p>
-          <h3>Send Now</h3>
-          <p>{formState.send_now.toString()}</p>
+          <h3>Memo</h3>
+          <p>{formState.meta.memo}</p>
           <button type="button" onClick={resetForm}>
             Reset Form
           </button>

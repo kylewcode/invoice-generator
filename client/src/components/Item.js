@@ -21,11 +21,9 @@ function Item({ item, lineItemsState, dispatch }) {
     ),
   };
 
-  // Each item has its own state which is sent to App when the item is added to the form.
   const [state, setState] = useState(() => initialState);
 
   const addLineItemToInvoice = () => {
-    // If this is a duplicate line item, an error must be thrown to avoid bugs with calculating totals and removing/adding items.
     const isDuplicate = checkInStateForDuplicateLineItem(lineItemsState, state);
     if (isDuplicate) {
       const errorMessage =
