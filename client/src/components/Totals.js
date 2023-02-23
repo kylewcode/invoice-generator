@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
+import { Fragment } from "react";
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function Totals({
   formState: {
@@ -12,17 +12,22 @@ function Totals({
   return (
     <Fragment>
       <Row>
-        <Col>
-          SUB TOTAL: {subtotal}
+        <Col>SUB TOTAL:</Col>
+        <Col className="light-blue fw-bold" xs={5}>
+          {subtotal}
         </Col>
       </Row>
       <Row>
-        <Col>
-          TAX: {tax}
+        <Col>TAX:</Col>
+        <Col className="light-blue fw-bold" xs={5}>
+          {tax}
         </Col>
       </Row>
       <Row>
-        <Col>GRAND TOTAL: {total}</Col>
+        <Col>GRAND TOTAL:</Col>
+        <Col className="light-blue fw-bold" xs={5}>
+          {total}
+        </Col>
       </Row>
     </Fragment>
   );

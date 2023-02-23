@@ -302,7 +302,7 @@ function App() {
                 <Col>
                   <Memo dispatch={dispatch} />
                 </Col>
-                <Col className="text-end pe-5">
+                <Col className="text-end">
                   <Totals formState={formState} dispatch={dispatch} />
                 </Col>
               </Row>
