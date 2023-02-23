@@ -326,8 +326,8 @@ function App() {
                   )}
                 </Col>
               </Row>
-              <Row className="justify-content-center my-5">
-                <Col xs={1}>
+              <Row className="text-center my-5">
+                <Col>
                   <Button
                     variant="primary"
                     type="submit"
